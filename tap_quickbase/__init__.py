@@ -25,7 +25,7 @@ LOGGER = singer.get_logger()
 
 def build_state(raw_state, catalog):
     LOGGER.info(
-        'Building State from raw state {} and catalog {}'.format(raw_state, catalog.to_dict())
+        'Building State from raw state {}'.format(raw_state)
     )
 
     state = {}
@@ -180,7 +180,7 @@ def build_field_lists(properties, metadata):
     ids_to_names = {}  # used to translate the column ids to names in returned results
     for name, prop in iter(properties.items()):
         field_id = singer_metadata.get(metadata, ('properties', name, ), 'id')
-        if field_id  and (prop.selected == 'true' or prop.inclusion == 'automatic'):
+        if field_id  and (str(prop.selected).lower() == 'true' or prop.inclusion == 'automatic'):
             field_list.append(field_id)
             ids_to_names[field_id] = name
     return (field_list, ids_to_names, )
@@ -302,6 +302,11 @@ def sync_table(conn, catalog_entry, state):
 
 def generate_messages(conn, catalog, state):
     for catalog_entry in catalog.streams:
+
+        # Skip unselected streams
+        if not catalog_entry.schema.selected:
+            LOGGER.info(f"Skipping {catalog_entry.tap_stream_id}: not selected")
+            continue
 
         # Emit a state message to indicate that we've started this stream
         yield singer.StateMessage(value=copy.deepcopy(state))
