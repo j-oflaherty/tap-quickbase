@@ -241,17 +241,17 @@ def gen_request(conn, stream, params=None):
             break
 
 
-def get_start(table_id):
+def get_start(table_id, state):
     """
     default to the CONFIG's start_date if the table does not have an entry in STATE.
     """
-    start = singer.get_bookmark(STATE, table_id, 'last_record')
+    start = singer.get_bookmark(state, table_id, 'last_record')
     if not start:
         start = CONFIG.get(
             'start_date',
             datetime.datetime.utcfromtimestamp(0).strftime(DATETIME_FMT)
         )
-        singer.write_bookmark(STATE, table_id, 'last_record', start)
+        singer.write_bookmark(state, table_id, 'last_record', start)
     return start
 
 
@@ -271,7 +271,7 @@ def sync_table(conn, catalog_entry, state):
         key_properties=catalog_entry.key_properties
     )
 
-    start = get_start(entity)
+    start = get_start(entity, state)
     formatted_start = dateutil.parser.parse(start).strftime(DATETIME_FMT)
     params = {
         'start': formatted_start,
@@ -292,7 +292,7 @@ def sync_table(conn, catalog_entry, state):
                 state,
                 catalog_entry.tap_stream_id,
                 'last_record',
-                row['datemodified']
+                row['date modified']
             )
             if rows_saved % 1000 == 0:
                 yield singer.StateMessage(value=copy.deepcopy(state))
