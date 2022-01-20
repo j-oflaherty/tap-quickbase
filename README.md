@@ -11,7 +11,7 @@ This tap:
 
     ```bash
     mkvirtualenv -p python3 tap-quickbase
-    pip install git+https://github.com/flash716/tap-quickbase.git
+    pip install git+https://github.com/j-ofalherty/tap-quickbase.git
     tap-quickbase --config config.json --discover
     tap-quickbase --config config.json --properties properties.json --state state.json
     ```
@@ -26,7 +26,7 @@ $ pip install tap-quickbase
 ```
 or
 ```bash
-$ git clone git@github.com:flash716/tap-quickbase.git
+$ git clone git@github.com:j-ofalherty/tap-quickbase.git
 $ cd tap-quickbase
 $ mkvirtualenv -p python tap-quickbase
 $ python install .
