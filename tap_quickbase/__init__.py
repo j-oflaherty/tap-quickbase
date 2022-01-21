@@ -162,6 +162,13 @@ def transform_data(data, schema):
             if field_type == "boolean" or "boolean" in field_type:
                 data[field_name] = field_value == "1"
 
+            # integer datatype
+            if field_type == "integer" or "integer" in field_type:
+                try:
+                    data[field_name] = int(field_value)
+                except (ValueError, TypeError):
+                    data[field_name] = None
+
 
 @singer.utils.ratelimit(2, 1)
 def request(conn, table_id, query_params):
