@@ -102,3 +102,8 @@ ENV/
 
 # pycharm
 .idea
+
+# singer config
+config/
+catalog.json
+catalogs/
