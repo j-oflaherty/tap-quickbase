@@ -107,3 +107,6 @@ ENV/
 config/
 catalog.json
 catalogs/
+
+# notebooks
+*.ipynb

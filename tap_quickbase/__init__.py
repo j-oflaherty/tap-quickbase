@@ -88,7 +88,8 @@ def discover_catalog(conn):
                     #       1000 would be 1 second
                     # let's just pass these as an integer
                     field_type.append('integer')
-
+            elif field.get('base_type') == 'int32':
+                field_type.append('integer')
             else:
                 field_type.append('string')
 
@@ -148,6 +149,8 @@ def transform_data(data, schema):
                     data[field_name] = datetime.datetime.utcfromtimestamp(
                         int(field_value) / 1000.0
                     ).strftime(DATETIME_FMT)
+                    if len(data[field_name].split('-')[0])<4: # soluciona fechas que tengan 3 digitos en el año
+                        data[field_name] = '0' + data[field_name]
                 except (ValueError, TypeError):
                     data[field_name] = None
 
